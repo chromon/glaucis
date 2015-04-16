@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="PA_1_2"
-	ProjectGUID="{8F2ABF27-AC5E-4F7E-B7AC-0C6972F853DD}"
-	RootNamespace="PA_1_2"
+	Name="PA_2_1"
+	ProjectGUID="{E2579497-BD19-46C0-9C7C-4B172B263AB9}"
+	RootNamespace="PA_2_1"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -171,11 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\zuma.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\zuma2.cpp"
+				RelativePath=".\train.cpp"
 				>
 			</File>
 		</Filter>
