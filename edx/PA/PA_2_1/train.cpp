@@ -98,31 +98,28 @@ int main() {
 		}
 		if(!empty()) {
 			t = top();
-			if(t != e && b[j] != e) {
+			if(t > e) {
 				flag = false;
 				cout<<"No\n";
 				break;
 			}else if(t == e){
 				pop();
 				r += "pop\n";
-			}else if(b[j] == e){ 
-				push(b[j]);
-				r += "push\n";
-				b[j] = 0;
+			}else {
+				for(j; j<e; j++) {
+
+					push(b[j]);
+					r += "push\n";
+				}
 				j = e;
 				pop();
 				r += "pop\n";
-			}else {
-				flag = false;
-				cout<<"No\n";
-				break;
 			}
 		}else {
 			for(j; j<e; j++) {
 
 				push(b[j]);
 				r += "push\n";
-				b[j] = 0;
 			}
 			j = e;
 			pop();
@@ -133,29 +130,6 @@ int main() {
 	if(flag) {
 		cout<<r<<endl;
 	}
-/*	
-	for(int i=0; i<n; i++) {
-		printf("%d", a[i]);
-		printf("%d\n", b[i]);
-	}
 
-	
-	
-	for(int i=0; i<n; i++) {
-		printf("%d\n", a[i]);
-	}
-
-	push(1);
-	push(2);
-	push(3);	
-	for(int i=size; i>=0; i--) {
-		printf("%d\n", s[i]);
-	}
-	int e = pop();
-	printf("%d", e);
-	for(int i=size; i>=0; i--) {
-		printf("%d\n", s[i]);
-	}
-*/
 	return 0;
 }
