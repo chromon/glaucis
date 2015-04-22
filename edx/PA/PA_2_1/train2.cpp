@@ -42,42 +42,46 @@ No
 
 using namespace std;
 
-#define L 16000001
-int a[L]; 
-int s[L];
-int b[L];
+class MyStack {
+public:
+	int stack[16000001];
 
-int size = -1;
+	int size;
 
-void push(int e) {
-	s[size + 1] = e;
-	size++;
-}
+	void push(int e) {
+		stack[size + 1] = e;
+		size++;
+	}
 
-int pop() {
-	int e = s[size];
-	s[size] = 0;
-	size--;
-	return e;
-}
+	int pop() {
+		int e = stack[size];
+		stack[size] = 0;
+		size--;
+		return e;
+	}
 
-int top() {
-	int e = s[size];
-	return e;
-}
+	int top() {
+		int e = stack[size];
+		return e;
+	}
 
-bool empty() {
-	return (size == -1)? true: false;
-}
-
+	bool empty() {
+		return (size == -1)? true: false;
+	}
+};
 
 int main() {
 	int n, m;
+	int size = -1;
+	MyStack a, s, b;
+	a.size = size;
+	b.size = size;
+	s.size = size;
 	cin>>n>>m;
 	for(int i=0; i<n; i++) {
-		cin>>a[i];
-		b[i] = i+1;
+		cin>>a.stack[i];
 	}
+
 /*
 	5 5         b=1 2 3 4 5
 				a=3 2 4 1 5
@@ -85,51 +89,7 @@ int main() {
 	s= 
 	j=4
 */
-	string r = "";
-	bool flag = true;
-	int j = 0;
-	for(int i=0; i<n; i++) {
-		int e = a[i];
-		int t;
-		if(size+1 > m) {
-			flag = false;
-			cout<<"No\n";
-			break;
-		}
-		if(!empty()) {
-			t = top();
-			if(t > e) {
-				flag = false;
-				cout<<"No\n";
-				break;
-			}else if(t == e){
-				pop();
-				r += "pop\n";
-			}else {
-				for(j; j<e; j++) {
-
-					push(b[j]);
-					r += "push\n";
-				}
-				j = e;
-				pop();
-				r += "pop\n";
-			}
-		}else {
-			for(j; j<e; j++) {
-
-				push(b[j]);
-				r += "push\n";
-			}
-			j = e;
-			pop();
-			r += "pop\n";
-		}
-	}
-
-	if(flag) {
-		cout<<r<<endl;
-	}
+	
 
 	return 0;
 }
