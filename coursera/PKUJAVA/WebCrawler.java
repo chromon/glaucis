@@ -4,6 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -11,20 +18,23 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class WebCrawler extends JFrame{
 	private static final long serialVersionUID = 1L;
 	
-	//´°¿ÚµÄ¿í¶ÈºÍ´°¿ÚµÄ¸ß¶È
+	//çª—å£çš„å®½åº¦å’Œçª—å£çš„é«˜åº¦
 	private int windowWidth = 800;
 	private int windowHeight = 600;
 	
-	//²Ëµ¥
+	//èœå•
 	private JMenuBar menuBar = null;
 	private JMenu fileMenu = null;
 	private JMenuItem savePageItem = null;
@@ -36,46 +46,61 @@ public class WebCrawler extends JFrame{
 	private JMenu helpMenu = null;
 	private JMenuItem aboutItem = null;
 	
-	//¶¥²¿¡¢ÖĞĞÄ¼°ÓÒ²àPanel
+	//é¡¶éƒ¨ã€ä¸­å¿ƒåŠå³ä¾§Panel
 	private JPanel topPanel = null;
 	private JPanel centerPanel = null;
 	private JPanel rightPanel = null;
 	
-	//¶¥²¿ÊäÈë¿ò¡¢ÏÂÔØ°´Å¥¼°ÅÀÈ¡°´Å¥
+	//é¡¶éƒ¨è¾“å…¥æ¡†ã€ä¸‹è½½æŒ‰é’®åŠçˆ¬å–æŒ‰é’®
 	private JLabel urlLabel = null;
 	private JTextField urlField = null;
 	private JButton downloading = null;
 	private JButton crawling = null;
 	
-	//ÖĞĞÄÏÔÊ¾
-	private JTextArea pageView = null;
+	//ä¸­å¿ƒæ˜¾ç¤º
+	private static JTextArea pageView = null;
 	
-	//ÓÒ²àÏÔÊ¾
-	private JTextArea emailView = null;
+	//å³ä¾§æ˜¾ç¤º
+	private static JTextArea emailView = null;
 	
-	//×´Ì¬À¸
+	//çŠ¶æ€æ 
 	private JToolBar toolBar = null;
-	private JLabel toolBarMsg = null;
+	private static JLabel toolBarMsg = null;
+	
+	static String content = "";
 	
 	public void init() {
 		this.setTitle("Web Page Crawler");
 		this.setBounds(300, 200, windowWidth, windowHeight);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setResizable(false);
 		
-		//Ö÷Ìå²¼¾Ö
+		//ä¸»ä½“å¸ƒå±€
 		this.setLayout(new BorderLayout());
 		
-		//²Ëµ¥
+		//èœå•
 		menuBar = new JMenuBar();
-		fileMenu = new JMenu("ÎÄ¼ş");
-		savePageItem = new JMenuItem("±£´æÍøÒ³µ½ÎÄ¼ş");
-		saveEmailItem = new JMenuItem("±£´æÓÊ¼şµ½ÎÄ¼ş");
-		exitItem = new JMenuItem("ÍË³ö");
-		operateMenu = new JMenu("²Ù×÷");
-		downloadItem = new JMenuItem("ÏÂÔØÒ³Ãæ");
-		crawleItem = new JMenuItem("ÅÀÈ¡ÓÊ¼şµØÖ·");
-		helpMenu = new JMenu("°ïÖú");
-		aboutItem = new JMenuItem("¹ØÓÚ");
+		fileMenu = new JMenu("æ–‡ä»¶");
+		savePageItem = new JMenuItem("ä¿å­˜ç½‘é¡µåˆ°æ–‡ä»¶");
+		saveEmailItem = new JMenuItem("ä¿å­˜é‚®ä»¶åˆ°æ–‡ä»¶");
+		exitItem = new JMenuItem("é€€å‡º");
+		operateMenu = new JMenu("æ“ä½œ");
+		downloadItem = new JMenuItem("ä¸‹è½½é¡µé¢");
+		crawleItem = new JMenuItem("çˆ¬å–é‚®ä»¶åœ°å€");
+		helpMenu = new JMenu("å¸®åŠ©");
+		aboutItem = new JMenuItem("å…³äº");
+		downloadItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				WebCrawler.download(urlField.getText());
+			}
+		});
+		crawleItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				WebCrawler.crawlingEmail();
+			}
+		});
 		
 		fileMenu.add(savePageItem);
 		fileMenu.add(saveEmailItem);
@@ -87,17 +112,23 @@ public class WebCrawler extends JFrame{
 		helpMenu.add(aboutItem);
 		menuBar.add(helpMenu);
 		
-		//¶¥²¿Panel
+		//é¡¶éƒ¨Panel
 		topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		
-		urlLabel = new JLabel("µØÖ·£º");
+		urlLabel = new JLabel("åœ°å€ï¼š");
 		urlField = new JTextField(100);
-		downloading = new JButton("ÏÂÔØ");
-		crawling = new JButton("ÅÀÈ¡");
+		downloading = new JButton("ä¸‹è½½");
+		crawling = new JButton("çˆ¬å–");
 		downloading.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+				WebCrawler.download(urlField.getText());
+			}
+		});
+		crawling.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				WebCrawler.crawlingEmail();
 			}
 		});
 		
@@ -106,20 +137,23 @@ public class WebCrawler extends JFrame{
 		topPanel.add(downloading);
 		topPanel.add(crawling);
 		
-		//ÖĞĞÄPanel
+		//ä¸­å¿ƒPanel
 		centerPanel = new JPanel();
-		//centerPanel.setBackground(Color.black);
-		pageView = new JTextArea(24, 85);
-		centerPanel.add(BorderLayout.CENTER, pageView);
+		pageView = new JTextArea(26, 71);
+		pageView.setLineWrap(true);
+		pageView.setWrapStyleWord(true);
+		centerPanel.add(BorderLayout.CENTER, new JScrollPane(pageView));
 		
-		//ÓÒ²àPanel
+		//å³ä¾§Panel
 		rightPanel = new JPanel();
-		emailView = new JTextArea(24, 20);
-		rightPanel.add(BorderLayout.CENTER, emailView);
+		emailView = new JTextArea(26, 21);
+		emailView.setLineWrap(true);
+		emailView.setWrapStyleWord(true);
+		rightPanel.add(BorderLayout.CENTER, new JScrollPane(emailView));
 		
-		//×´Ì¬À¸
+		//çŠ¶æ€æ 
 		toolBar = new JToolBar();
-		toolBarMsg = new JLabel("downloading...");
+		toolBarMsg = new JLabel();
 		toolBar.add(toolBarMsg);
 		
 		this.setJMenuBar(menuBar);
@@ -130,14 +164,79 @@ public class WebCrawler extends JFrame{
 		this.setVisible(true);
 	}
 	
-//	public static String download(String url) {
-//		new Thread( ()->{
-//			String content = getContentFromUrl(url);
-//			SwingUtilities.invokeLater(()->{
-//				textArea.append( content );
-//			});
-//		}).start();
-//	}
+	public static void download(String strUrl) {
+		new Thread( ()->{
+			try {
+				//è®¾ç½®åº•éƒ¨çŠ¶æ€æ 
+				toolBarMsg.setText(" å¼€å§‹ä¸‹è½½...");
+				
+				//è·å–æ–‡ä»¶ç±»å‹åŠå­—ç¬¦ç¼–ç 
+				URL url = new URL(strUrl);  
+		        URLConnection urlConn = url.openConnection();  
+				String[] type = urlConn.getContentType().split(";");
+				String[] charset = urlConn.getContentType().split("=");
+				
+				String msg = "";
+				if(charset.length > 1) {
+					msg = "å½“å‰æ–‡ä»¶ç±»å‹ï¼š"+type[0]+ "\nå½“å‰å­—ç¬¦ç¼–ç ï¼š" +charset[1];
+				}else {
+					msg = "å½“å‰æ–‡ä»¶ç±»å‹ï¼š"+type[0]+ "\nå½“å‰å­—ç¬¦ç¼–ç ï¼šç¼–ç ç±»å‹æœªçŸ¥";
+				}
+				
+				//æ˜¾ç¤ºæ–‡ä»¶ç±»å‹åŠå­—ç¬¦ç¼–ç 
+				JOptionPane.showMessageDialog(null, msg);
+				
+				//ä¸‹è½½æ–‡ä»¶
+				InputStream stream = url.openStream();
+				BufferedReader reader = null;
+				if(charset.length > 1) {
+					reader = new BufferedReader(new InputStreamReader(stream, charset[1]));
+				}else {
+					reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+				}
+				StringBuilder sb = new StringBuilder();
+				String line; 
+				while ((line = reader.readLine()) != null) { 
+					//parse(line);
+					sb.append(line+"\n"); 
+				}
+
+				content = sb.toString();
+				//parse(content);
+				SwingUtilities.invokeLater(()->{
+					pageView.append(content);
+					toolBarMsg.setText(" ä¸‹è½½å®Œæˆ!");
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+	
+	public static void crawlingEmail() {
+		new Thread( ()->{
+			try {
+				//è®¾ç½®åº•éƒ¨çŠ¶æ€æ 
+				toolBarMsg.setText(" å¼€å§‹çˆ¬å–é‚®ä»¶åœ°å€...");
+				
+				parse(content);
+				
+				SwingUtilities.invokeLater(()->{
+					toolBarMsg.setText(" é‚®ä»¶åœ°å€çˆ¬å–å®Œæˆ!");
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}).start();
+	}
+	
+	public static void parse(String line) {  
+		Pattern p = Pattern.compile("[\\w[.-]]+@[\\w[.-]]+\\.[\\w]+");
+		Matcher m = p.matcher(line);  
+		while(m.find()) {  
+			emailView.append(m.group() + "\n");  
+		}  
+	}  
 
 	public static void main(String[] args) {
 		String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
