@@ -1,10 +1,12 @@
 package test;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -13,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -67,6 +70,10 @@ public class WebCrawler extends JFrame{
 	private JToolBar toolBar = null;
 	private static JLabel toolBarMsg = null;
 	
+	//保存文件
+	private JFileChooser chooser = null;
+	
+	//页面正文
 	static String content = "";
 	
 	public void init() {
@@ -80,15 +87,42 @@ public class WebCrawler extends JFrame{
 		
 		//菜单
 		menuBar = new JMenuBar();
+		
+		//文件Menu
 		fileMenu = new JMenu("文件");
 		savePageItem = new JMenuItem("保存网页到文件");
 		saveEmailItem = new JMenuItem("保存邮件到文件");
 		exitItem = new JMenuItem("退出");
+		exitItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				Component cmp= e.getComponent();
+            	while(!(cmp instanceof JFrame ) || cmp.getParent() !=null ){
+            		cmp = cmp.getParent();
+            	}
+            	((JFrame)cmp).dispose();
+			}
+		});
+		//保存对话框
+		chooser = new JFileChooser();
+	    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+	    savePageItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+//				File file = new File("mongrove.tiff");
+//	            chooser.setSelectedFile(file);//设置默认文件名
+//	            int retval = chooser.showSaveDialog(this);//显示“保存文件”对话框
+//	            if(retval == JFileChooser.APPROVE_OPTION) {
+//	                file = chooser.getSelectedFile();
+//	                System.out.println("File to save " + file);
+//	            }
+			}
+		});
+		
+		//操作Menu
 		operateMenu = new JMenu("操作");
 		downloadItem = new JMenuItem("下载页面");
 		crawleItem = new JMenuItem("爬取邮件地址");
-		helpMenu = new JMenu("帮助");
-		aboutItem = new JMenuItem("关于");
 		downloadItem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -101,6 +135,10 @@ public class WebCrawler extends JFrame{
 				WebCrawler.crawlingEmail();
 			}
 		});
+		
+		//帮助Menu
+		helpMenu = new JMenu("帮助");
+		aboutItem = new JMenuItem("关于");
 		
 		fileMenu.add(savePageItem);
 		fileMenu.add(saveEmailItem);
