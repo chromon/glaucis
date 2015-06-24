@@ -3,10 +3,14 @@ package test;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -96,7 +100,7 @@ public class WebCrawler extends JFrame{
 		exitItem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				Component cmp= e.getComponent();
+				Component cmp = e.getComponent();
             	while(!(cmp instanceof JFrame ) || cmp.getParent() !=null ){
             		cmp = cmp.getParent();
             	}
@@ -106,18 +110,58 @@ public class WebCrawler extends JFrame{
 		//保存对话框
 		chooser = new JFileChooser();
 	    chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-	    savePageItem.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-//				File file = new File("mongrove.tiff");
-//	            chooser.setSelectedFile(file);//设置默认文件名
-//	            int retval = chooser.showSaveDialog(this);//显示“保存文件”对话框
-//	            if(retval == JFileChooser.APPROVE_OPTION) {
-//	                file = chooser.getSelectedFile();
-//	                System.out.println("File to save " + file);
-//	            }
-			}
-		});
+	    savePageItem.addActionListener(new ActionListener() {  
+            public void actionPerformed(ActionEvent e) {  
+            	if(content != null && content != "") {
+	            	File file;
+		            //显示“保存文件”对话框
+		            int retval = chooser.showSaveDialog(WebCrawler.this);
+		            if(retval == JFileChooser.APPROVE_OPTION) {
+		                file = chooser.getSelectedFile();
+		                if(file.exists() == false) {
+		                	try {
+								String f = file.getAbsolutePath();
+								System.out.println("save: "+f);
+								FileWriter out = new FileWriter(f);
+								out.write(content);
+								out.close();
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+		                }
+		            }
+					toolBarMsg.setText(" 页面保存完成！");
+            	}else {
+					JOptionPane.showMessageDialog(null, "请先进行页面下载工作！");
+            	}
+            }  
+        }); 
+	    saveEmailItem.addActionListener(new ActionListener() {  
+            public void actionPerformed(ActionEvent e) {  
+            	if (emailView.getText() != null && !emailView.getText().equals("")) {
+                	File file;
+    	            //显示“保存文件”对话框
+    	            int retval = chooser.showSaveDialog(WebCrawler.this);
+    	            if(retval == JFileChooser.APPROVE_OPTION) {
+    	                file = chooser.getSelectedFile();
+    	                if(file.exists() == false) {
+    	                	try {
+    							String f = file.getAbsolutePath();
+    							//System.out.println("save: "+f);
+    							FileWriter out = new FileWriter(f);
+    							out.write(emailView.getText());
+    							out.close();
+    						} catch (IOException e1) {
+    							e1.printStackTrace();
+    						}
+    	                }
+    	            }
+    				toolBarMsg.setText(" 邮件列表保存完成！");
+            	}else {
+					JOptionPane.showMessageDialog(null, "当前列表没有任何邮件！");
+            	}
+            }  
+        }); 
 		
 		//操作Menu
 		operateMenu = new JMenu("操作");
@@ -126,19 +170,33 @@ public class WebCrawler extends JFrame{
 		downloadItem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				WebCrawler.download(urlField.getText());
+				if(urlField.getText() != null && !urlField.getText().equals("")) {
+					WebCrawler.download(urlField.getText().trim());
+				}else {
+					JOptionPane.showMessageDialog(null, "URL不能为空！");
+				}
 			}
 		});
 		crawleItem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				WebCrawler.crawlingEmail();
+				if(content != null && content != "") {
+					WebCrawler.crawlingEmail();
+				}else {
+					JOptionPane.showMessageDialog(null, "请先进行页面下载工作！");
+				}
 			}
 		});
 		
 		//帮助Menu
 		helpMenu = new JMenu("帮助");
 		aboutItem = new JMenuItem("关于");
+		aboutItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Web Crawler version 0.1");
+			}
+		});
 		
 		fileMenu.add(savePageItem);
 		fileMenu.add(saveEmailItem);
@@ -160,13 +218,21 @@ public class WebCrawler extends JFrame{
 		downloading.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				WebCrawler.download(urlField.getText());
+				if(urlField.getText() != null && !urlField.getText().equals("")) {
+					WebCrawler.download(urlField.getText().trim());
+				}else {
+					JOptionPane.showMessageDialog(null, "URL不能为空！");
+				}
 			}
 		});
 		crawling.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				WebCrawler.crawlingEmail();
+				if(content != null && content != "") {
+					WebCrawler.crawlingEmail();
+				}else {
+					JOptionPane.showMessageDialog(null, "请先进行页面下载工作！");
+				}
 			}
 		});
 		
@@ -272,7 +338,7 @@ public class WebCrawler extends JFrame{
 		Pattern p = Pattern.compile("[\\w[.-]]+@[\\w[.-]]+\\.[\\w]+");
 		Matcher m = p.matcher(line);  
 		while(m.find()) {  
-			emailView.append(m.group() + "\n");  
+			emailView.append(m.group() + "\r\n");  
 		}  
 	}  
 
