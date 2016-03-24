@@ -28,7 +28,7 @@ print(now + timedelta(days=2, hours=3, minutes=20))
 print(now + timedelta(days=2, hours=3, minutes=20, seconds=3))
 print('--------------')
 
-tz_3 = timezone(timedelta(hours=8))
+tz_3 = timezone(timedelta(hours=+8))
 no = datetime.now()
 print(no)
 dt = now.replace(tzinfo=tz_3)
