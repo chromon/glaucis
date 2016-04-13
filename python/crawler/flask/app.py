@@ -20,5 +20,13 @@ def signin() :
         return render_template('success.html', username=username)
     return render_template('form.html', message='Bad username or password.', username=username)
 
+@app.route('/signin_get', methods=['GET'])
+def signin_get() :
+    username = request.form['username']
+    password = request.form['password']
+    if username == 'ellery' and password == 'admin' :
+        return render_template('success.html', username=username)
+    return render_template('form.html', message='Bad username or password.', username=username)
+
 if __name__ == '__main__' :
     app.run()
