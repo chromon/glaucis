@@ -3,18 +3,24 @@
 import requests
 import json
 
+# params：查询字符串 data：表单数据
 payload = {'k1': 'v1'}
 
-headers = {'content-type': 'application/json',
-           'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
+
+files = {'file': open('abc.txt', 'rb')}
 
 # r = requests.get('http://httpbin.org/get', params=payload)
 # 其他请求
-r = requests.post('http://httpbin.org/post', json.dumps(payload), headers=headers)
+# r = requests.post('http://httpbin.org/post', json.dumps(payload) headers=headers)
+r = requests.post('http://httpbin.org/post', files=files)
 # r = requests.put('http://httpbin.org/put')
 # r = requests.delete('http://httpbin.org/delete')
 # r = requests.head('http://httpbin.org/get')
 # r = requests.options('http://httpbin.org/get')
+
+# 重定向
+# r = requests.get('http://github.com', allow_redirects=True)
 
 # 基础操作
 print('type(r):', type(r))
