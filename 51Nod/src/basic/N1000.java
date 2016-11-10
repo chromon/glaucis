@@ -1,4 +1,6 @@
-package basic; /**
+package basic;
+
+/*
  * 1000 A+B
  * 给出2个整数A和B，计算两个数的和。
  *
@@ -26,8 +28,7 @@ public class N1000 {
         Scanner scanner = new Scanner(System.in);
         int a = scanner.nextInt();
         int b = scanner.nextInt();
-        int sum = a + b;
-        return sum;
+        return a + b;
     }
 
     public static void main(String[] args) {
