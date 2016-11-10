@@ -2,21 +2,21 @@ package basic;
 
 /*
  * 1000 大数加法
- * 给出2个大整数A,B，计算A+B的结果。
+ * 给出2个大整数 A,B，计算 A+B 的结果。
  *
  * Input
- * 第1行：大数A
- * 第2行：大数B
- * (A,B的长度 <= 10000 需注意：A B有可能为负数）
+ * 第1行：大数 A
+ * 第2行：大数 B
+ * (A,B 的长度 <= 10000 需注意：A B 有可能为负数）
  *
  * Output
- * 输出A + B
+ * 输出 A + B
  *
- * Input示例
+ * Input 示例
  * 68932147586
  * 468711654886
  *
- * Output示例
+ * Output 示例
  * 537643802472
  *
  * @author Ellery
@@ -27,156 +27,143 @@ import java.util.Scanner;
 
 public class N1005 {
 
-    private char[] charNumA;
-    private char[] charNumB;
+    private char[] charNumA, charNumB;
 
-    private int[] numA;
-    private int[] numB;
+    private int tempA, tempB;
 
-    private char numASign = '+';
-    private char numBSign = '+';
+    private int[] numA, numB;
 
-    private char finalSign = '+';
-
-    private int length = 0;
+    private int lengthA, lengthB, maxLength;
 
     private void getData() {
         Scanner scanner = new Scanner(System.in);
         String num1 = scanner.next();
         String num2 = scanner.next();
 
-        if (num1.charAt(0) == '-') {
-            num1 = num1.replaceAll("-", "");
-            this.numASign = '-';
-        } else if (num2.charAt(0) == '-') {
-            num2 = num2.replaceAll("-", "");
-            this.numBSign = '-';
-        }
-
         this.charNumA = num1.toCharArray();
         this.charNumB = num2.toCharArray();
+
+        if (this.charNumA[0] == '-') {
+            this.tempA = 1;
+        }
+        if (this.charNumB[0] == '-') {
+            this.tempB = 1;
+        }
     }
 
     private void swap() {
 
-        // 取长度最大值
-        this.length = this.charNumA.length > this.charNumB.length ? this.charNumA.length : this.charNumB.length;
+        // 去掉符号的实际长度
+        this.lengthA = (tempA == 1)? this.charNumA.length - 1: this.charNumA.length;
+        this.lengthB = (tempB == 1)? this.charNumB.length - 1: this.charNumB.length;
 
-        // 两数相加最大值长度加1
-        this.numA = new int[this.length + 1];
-        this.numB = new int[this.length];
+        this.maxLength = this.lengthA > this.lengthB? this.lengthA: this.lengthB;
+
+        // 两数最大值长度
+        this.numA = new int[this.maxLength];
+        this.numB = new int[this.maxLength];
 
         // 逆向循环赋值
-        for (int i = this.charNumA.length - 1, j = 0; i >= 0; i --) {
+        for (int i = (this.tempA == 1? this.lengthA: this.lengthA - 1), j = 0; i >= this.tempA; i --) {
             this.numA[j++] = Integer.parseInt(String.valueOf(this.charNumA[i]));
         }
 
-        for (int i = this.charNumB.length - 1, j = 0; i >= 0; i --) {
+        for (int i = (this.tempB == 1? this.lengthB: this.lengthB - 1), j = 0; i >= this.tempB; i --) {
             this.numB[j++] = Integer.parseInt(String.valueOf(this.charNumB[i]));
         }
     }
 
     private void add() {
 
+        // 逆序保存
         this.swap();
 
-        // 逐位相加
-        for (int i = 0; i < this.length; i ++) {
-            this.numA[i] += this.numB[i];
-            if (this.numA[i] > 9) {
-                this.numA[i] -= 10;
-                this.numA[i+1] ++;
-            }
+        int[] result = new int[maxLength];
+
+        int t = 0;
+
+        for (int i = 0; i < maxLength; i++) {
+            result[i] = this.numA[i] + this.numB[i] + t;
+            t = result[i] / 10;
+            result[i] = result[i] % 10;
         }
 
-        // 判断结果符号
-        if (finalSign == '-') {
-            System.out.print(finalSign);
+        if (this.tempA == 1) {
+            System.out.print("-");
         }
+        for (int i = result.length - 1; i >= 0; i--) {
+            System.out.print(result[i]);
+        }
+    }
 
-        // 倒叙输出
-        boolean flag = true;
-        for (int i = this.length - 1; i >= 0; i --) {
-            if (this.numA[i] == 0 && flag) {
-                continue;
+    private boolean compare() {
+
+        if (this.charNumA.length - this.tempA > this.charNumB.length - this.tempB) {
+            // A > B
+            return true;
+        } else if (this.charNumA.length - this.tempA < this.charNumB.length - this.tempB) {
+            // A < B
+            return false;
+        } else {
+            int i;
+            for (i = 0; i < this.charNumA.length
+                    && this.charNumA[i + this.tempA] == this.charNumB[i + this.tempB]; i ++);
+            if (this.charNumA[i + this.tempA] > this.charNumB[i + this.tempB]) {
+                // A > B
+                return true;
             } else {
-                flag = false;
+                // A < B
+                return false;
             }
-            System.out.print(this.numA[i]);
         }
     }
 
     private void minus() {
-        // 判断 n1 - n2 谁大 ==> 得出计算符号与 finalSign 合并
+
+        // A < B 则 AB 互换
+        if (!this.compare()) {
+            char[] temChar = this.charNumA;
+            this.charNumA = this.charNumB;
+            this.charNumB = temChar;
+
+            int tem = this.tempA;
+            this.tempA = this.tempB;
+            this.tempB = tem;
+        }
+
         this.swap();
 
-        int[] result = new int[this.length];
-        char tempSign = '+';
+        int[] result = new int[maxLength];
 
-        boolean bitTemp = false;
+        int t = 0;
+        int m = -1;
 
-        // numA 长度为原长度 +1
-        if (this.numA.length-1 < this.numB.length) {
-            tempSign = '-';
-
-        } else if (this.numA.length-1 == this.numB.length) {
-            int i = (this.numA.length - 1) - 1;
-            while (i > 0 && numA[i] == numB[i]) {
-                i--;
-            }
-            if (this.numA[i] < this.numB[i]) {
-                tempSign = '-';
-            }
+        for (int i = 0; i < this.maxLength; i ++) {
+            int s = this.numA[i] - this.numB[i] - t >= 0? 0: 1;
+            result[i] = (this.numA[i] - this.numB[i] - t + 10) % 10;
+            m = result[i] > 0 ? i: m;
+            t = s;
         }
 
-        for (int i = 0; i < this.length; i++) {
-            result[i] = this.numA[i] - this.numB[i];
-            if (result[i] < 0) {
-                this.numA[i+1] --;
-                // result[i] += 10;
+        if (m < 0) {
+            System.out.print("0");
+        } else {
+            if (this.tempA == 1) {
+                System.out.print("-");
+            }
+            for (int i = result.length - 1; i >= 0; i--) {
+                System.out.print(result[i]);
             }
         }
-
-        // 判断符号
-        if ((this.finalSign == '-' && tempSign == '+') || (this.finalSign == '+' && tempSign == '-')) {
-            System.out.print('-');
-        }
-
-        // 倒叙输出
-        boolean flag = true;
-        for (int i = this.length - 1; i >= 0; i --) {
-            if (result[i] == 0 && flag) {
-                continue;
-            } else {
-                flag = false;
-            }
-            System.out.print(Math.abs(result[i]));
-        }
-
-
     }
 
     private void getResult() {
-    /*
-    *
-    * n1 + n2               add
-    * n1 + -n2  n1 - n2     minus
-    * -n1 + n2  -(n1 - n2)  minus
-    * -n1 + -n2 -(n1 + n2)  add
-    *
-    */
         this.getData();
 
-        if (numASign == '+' && numBSign == '+') {
-            this.add();
-        } else if (numASign == '-' && numBSign == '-') {
-            this.finalSign = '-';
-            this.add();
-        } else if (numASign == '+' && numBSign == '-') {
+        if (this.tempA != this.tempB) {
             this.minus();
-        } else if (numASign == '-' && numBSign == '+') {
-            this.finalSign = '-';
-            this.minus();
+        } else {
+            this.add();
         }
     }
 
