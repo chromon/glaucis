@@ -16,8 +16,7 @@ package basic;
  * Output示例
  * 3
  *
- * @author Ellery
- * @Date 2016-11-06
+ * Created by Ellery on 2016/11/06.
  */
 
 import java.util.Scanner;

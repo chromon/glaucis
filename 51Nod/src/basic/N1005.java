@@ -19,8 +19,7 @@ package basic;
  * Output 示例
  * 537643802472
  *
- * @author Ellery
- * @Date 2016-11-07
+ * Created by Ellery on 2016/11/07.
  */
 
 import java.util.Scanner;
@@ -33,7 +32,7 @@ public class N1005 {
 
     private int[] numA, numB;
 
-    private int lengthA, lengthB, maxLength;
+    private int maxLength;
 
     private void getData() {
         Scanner scanner = new Scanner(System.in);
@@ -54,21 +53,21 @@ public class N1005 {
     private void swap() {
 
         // 去掉符号的实际长度
-        this.lengthA = (tempA == 1)? this.charNumA.length - 1: this.charNumA.length;
-        this.lengthB = (tempB == 1)? this.charNumB.length - 1: this.charNumB.length;
+        int lengthA = (tempA == 1)? this.charNumA.length - 1: this.charNumA.length;
+        int lengthB = (tempB == 1)? this.charNumB.length - 1: this.charNumB.length;
 
-        this.maxLength = this.lengthA > this.lengthB? this.lengthA: this.lengthB;
+        this.maxLength = lengthA > lengthB? lengthA: lengthB;
 
         // 两数最大值长度
         this.numA = new int[this.maxLength];
         this.numB = new int[this.maxLength];
 
         // 逆向循环赋值
-        for (int i = (this.tempA == 1? this.lengthA: this.lengthA - 1), j = 0; i >= this.tempA; i --) {
+        for (int i = (this.tempA == 1? lengthA: lengthA - 1), j = 0; i >= this.tempA; i --) {
             this.numA[j++] = Integer.parseInt(String.valueOf(this.charNumA[i]));
         }
 
-        for (int i = (this.tempB == 1? this.lengthB: this.lengthB - 1), j = 0; i >= this.tempB; i --) {
+        for (int i = (this.tempB == 1? lengthB: lengthB - 1), j = 0; i >= this.tempB; i --) {
             this.numB[j++] = Integer.parseInt(String.valueOf(this.charNumB[i]));
         }
     }
@@ -106,15 +105,13 @@ public class N1005 {
             return false;
         } else {
             int i;
-            for (i = 0; i < this.charNumA.length
-                    && this.charNumA[i + this.tempA] == this.charNumB[i + this.tempB]; i ++);
+            for (i = 0; i < this.charNumA.length && this.charNumA[i + this.tempA] == this.charNumB[i + this.tempB]; i ++);
             if (this.charNumA[i + this.tempA] > this.charNumB[i + this.tempB]) {
                 // A > B
                 return true;
-            } else {
-                // A < B
-                return false;
             }
+            // A < B
+            return false;
         }
     }
 
