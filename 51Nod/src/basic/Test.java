@@ -7,6 +7,6 @@ public class Test {
     public static void main(String[] args) {
         String s = "-4982849";
         String b = "-4392";
-        System.out.println(b.charAt(0));
+        System.out.println(6%10);
     }
 }
