@@ -19,13 +19,14 @@ package basic;
     Created by Ellery on 2016/11/12.
  */
 
+import java.util.Locale;
 import java.util.Scanner;
 
 public class N1057 {
 
     private long[] result;
 
-    private final int MAX = 100000000;
+    private final long MAX = 1000000000000L;
     private int num;
 
     private N1057() {
@@ -33,7 +34,7 @@ public class N1057 {
         Scanner scanner = new Scanner(System.in);
         this.num = Integer.parseInt(scanner.next());
 
-        this.result = new long[100000000];
+        this.result = new long[100000];
         this.result[0] = 1;
     }
 
@@ -62,12 +63,18 @@ public class N1057 {
             }
         }
 
+//        System.out.println(m); // 100000! = 38047
+//
+//        int count = (result[m] + "").length() + m*12;
+//        System.out.println(count); // 456574
+
         // 数组中最后一个存在值的元素，即为结果的最高几位（元素的大小可能小于数组元素的最大值）
-        System.out.print(result[m]);
+        System.out.println(result[m]);
         // 剩余 m - 1 位数组元素元素（每位长度均为最大值），倒序输出
         for (int i = m - 1; i >= 0; i --) {
-            System.out.print(result[i]);
+            System.out.println(String.format(Locale.getDefault(), "%012d", result[i]));
         }
+
     }
 
     public static void main(String[] args) {
