@@ -1,4 +1,4 @@
-package basic;
+package level7;
 
 /*
     1059: N的阶乘 V2
@@ -34,14 +34,10 @@ public class N1059 {
 
     private PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
 
-    private long start, end;
-
     private N1059() {
 
         Scanner scanner = new Scanner(new BufferedInputStream(System.in));
         this.num = Integer.parseInt(scanner.next());
-
-        this.start = System.currentTimeMillis();
 
         this.result = new long[100000];
         this.result[0] = 1;
@@ -72,9 +68,9 @@ public class N1059 {
             }
         }
 
-//        System.out.println(m); // 100000! = 38047
+        // System.out.println(m); // 100000! = 38047
         int count = (result[m] + "").length() + m*12;
-//        System.out.println(count); //100000! = 456574
+        // System.out.println(count); //100000! = 456574
 
         StringBuilder s = new StringBuilder();
         // 数组中最后一个存在值的元素，即为结果的最高几位（元素的大小可能小于数组元素的最大值）
@@ -87,7 +83,6 @@ public class N1059 {
         }
 
         if (count <= 1000) {
-//            out.println(s.toString());
             out.println(s);
         } else {
 
@@ -97,9 +92,6 @@ public class N1059 {
             }
             out.println(s.substring((count / 1000) * 1000));
         }
-
-        this.end = System.currentTimeMillis();
-        out.println(end - start);
 
         out.flush();
     }
