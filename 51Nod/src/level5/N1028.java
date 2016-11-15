@@ -24,7 +24,7 @@ package level5;
  */
 
 /*
-    应该使用FFT（快速傅里叶算法）计算
+    应该使用FFT（快速傅里叶算法）计算，好难，实在是看不懂 ……
  */
 
 import java.math.BigInteger;

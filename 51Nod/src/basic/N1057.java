@@ -16,6 +16,7 @@ package basic;
 
     Output示例
     120
+
     Created by Ellery on 2016/11/12.
  */
 
