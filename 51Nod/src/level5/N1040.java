@@ -1,17 +1,18 @@
-package basic;
+package level5;
 
 /*
-    1011: 最大公约数GCD
-    输入2个正整数A，B，求A与B的最大公约数。
+    1040: 最大公约数之和
+    给出一个n，求1-n这n个数，同n的最大公约数的和。
+    比如：n = 6； 1，2，3，4，5，6 同6的最大公约数分别为1，2，3，2，1，6，加在一起 = 15
 
     Input
-    2个数A,B，中间用空格隔开。(1<= A,B <= 10^9)
+    1个数N(N <= 10^9)
 
     Output
-    输出A与B的最大公约数。
+    公约数之和
 
     Input 示例
-    30 105
+    6
 
     Output 示例
     15
@@ -26,93 +27,59 @@ package basic;
  */
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class N1011 {
+public class N1040 {
 
-    private int a, b;
+    private long n;
 
-    private N1011() {
+    private PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+
+    private N1040() {
         Scanner scanner = new Scanner(new BufferedInputStream(System.in));
-        this.a = scanner.nextInt();
-        this.b = scanner.nextInt();
+        this.n = scanner.nextInt();
     }
 
-//    private int oujilide(int a, int b) {
-//
-//        if (a < b) {
-//            a = a + b;
-//            b = a - b;
-//            a = a - b;
-//        }
-//
-//        if (b == 0) {
-//            return a;
-//        }
-//
-//        return oujilide(b, a % b);
-//    }
+    private long eular(long x) {
 
-    private int oujilideV2(int a, int b) {
-
-        if (a < b) {
-            a = a + b;
-            b = a - b;
-            a = a - b;
+        long i, res = x;
+        for (i = 2; i < (int) Math.sqrt(x * 1.0) + 1; i ++) {
+            if (x % i == 0) {
+                res = res / i * (i - 1);
+                while (x % i == 0) {
+                    // 保证i一定是素数
+                    x /= i;
+                }
+            }
         }
-
-        if (b == 0) {
-            return a;
+        if (x > 1) {
+            res = res / x * (x - 1);
         }
-
-        return oujilideV2(a - b, b);
+        return res;
     }
-
-    /*
-        若x，y均为偶数，f(x, y) = 2 * f( x / 2, y / 2) = 2 * f( x >> 1, y >> 1);
-        若x是偶数，y是奇数，f(x, y) = f(x / 2, y) = f( x >> 1, y);
-        若x是奇数，y是偶数，f(x, y) = f(x, y / 2) = f(x, y >> 1);
-        若x和y均为奇数，f(x, y) = f(y, x - y)。这时 x - y 一定是偶数，下一步一定会除以2。
-     */
-
-//    private int oujilideV3(int a, int b) {
-//
-//        if (a < b) {
-//            oujilideV3(b, a);
-//        }
-//
-//        if (b == 0) {
-//            return a;
-//        }
-//
-//        if (isEven(a)) {
-//            if (isEven(b)) {
-//                return oujilideV3(a / 2, b / 2) * 2;
-//            }
-//            return oujilideV3(a / 2, b);
-//        } else {
-//            if (isEven(b)) {
-//                return oujilideV3(a, b / 2);
-//            }
-//            return oujilideV3(b, a - b);
-//        }
-//    }
-//
-//    private boolean isEven(int a) {
-//        if (a % 2 == 0) {
-//            return true;
-//        }
-//        return false;
-//    }
 
     private void display() {
-//        System.out.println(oujilide(this.a, this.b));
-        System.out.println(oujilideV2(this.a, this.b));
-//        System.out.println(oujilideV3(this.a, this.b));
+        long sum = 0;
+
+        for (long i = 1; i * i <= this.n; i++) {
+            if (this.n % i == 0) {
+                long tmp = this.n / i;
+                sum += this.eular(tmp) * i;
+
+                if (i != tmp) {
+                    sum += this.eular(i) * tmp;
+                }
+            }
+        }
+
+        out.println(sum);
+        out.flush();
     }
 
     public static void main(String[] args) {
-        N1011 n = new N1011();
+        N1040 n = new N1040();
         n.display();
     }
 }

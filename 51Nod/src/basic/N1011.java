@@ -75,31 +75,30 @@ public class N1011 {
         若x和y均为奇数，f(x, y) = f(y, x - y)。这时 x - y 一定是偶数，下一步一定会除以2。
      */
 
-//    private int oujilideV3(int a, int b) {
-//
+//    private long oujilideV3(long a, long b) {
 //        if (a < b) {
-//            oujilideV3(b, a);
+//            return oujilideV3(b, a);
 //        }
-//
 //        if (b == 0) {
 //            return a;
 //        }
-//
 //        if (isEven(a)) {
 //            if (isEven(b)) {
-//                return oujilideV3(a / 2, b / 2) * 2;
+//                return oujilideV3(a >> 1, b >> 1) << 1;
+//            } else {
+//                return oujilideV3(a >> 1, b);
 //            }
-//            return oujilideV3(a / 2, b);
 //        } else {
 //            if (isEven(b)) {
-//                return oujilideV3(a, b / 2);
+//                return oujilideV3(a, b >> 1);
+//            } else {
+//                return oujilideV3(b, a - b);
 //            }
-//            return oujilideV3(b, a - b);
 //        }
 //    }
 //
-//    private boolean isEven(int a) {
-//        if (a % 2 == 0) {
+//    private static boolean isEven(long a) {
+//        if ((a & 0x1) == 0) {
 //            return true;
 //        }
 //        return false;
