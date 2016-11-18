@@ -12,6 +12,8 @@
 
 #### Level 4[78]
 
+* [Level 4 Details](./src/level4/README.md)
+
 #### Level 5[107]
 
 * [Level 5 Details](./src/level5/README.md)

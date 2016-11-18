@@ -34,7 +34,7 @@ public class N1179 {
 
     private int MAX = 1000000;
 
-    private int[] s, r;
+    private int[] s;
 
     public N1179() {
         Scanner scanner = new Scanner(new BufferedInputStream(System.in));
