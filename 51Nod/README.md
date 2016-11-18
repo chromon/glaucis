@@ -18,6 +18,8 @@
 
 #### Level 6[90]
 
+* [Level 6 Details](./src/level6/README.md)
+
 #### Level 7[83]
 
 * [Level 7 Details](./src/level7/README.md)

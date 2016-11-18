@@ -19,6 +19,9 @@ package basic;
     Created by Ellery on 2016/11/16.
  */
 
+/*
+    a * b = (ab)最小公倍数 * (ab)最大公约数
+ */
 
 import java.io.BufferedInputStream;
 import java.util.Scanner;
@@ -49,8 +52,6 @@ public class N1012 {
     }
 
     private long lcm() {
-//        System.out.prlongln(this.gcd(this.a, this.b));
-//        System.out.prlongln(this.a * this.b / this.gcd(this.a, this.b));
         return this.a * this.b / this.gcd(this.a, this.b);
     }
 
