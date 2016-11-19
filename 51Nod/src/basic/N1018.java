@@ -54,30 +54,43 @@ public class N1018 {
             int low = left;
             int high = right;
             while (low < high) {
+
                 // high下标位置开始，向左边遍历，查找不大于基准数的元素
                 while (low < high && s[high] >= key) {
-                    high--;
+                    high --;
                 }
-                if (low < high) {// 找到小于准基数key的元素
-                    s[low] = s[high];// 赋值给low下标位置，low下标位置元素已经与基准数对比过了
-                    low++;// low下标后移
-                } else {// 没有找到比准基数小的元素
+
+                if (low < high) {
+                    // 找到小于准基数key的元素
+                    // 赋值给low下标位置，low下标位置元素已经与基准数对比过了
+                    s[low] = s[high];
+                    // low下标后移
+                    low ++;
+                } else {
+                    // 没有找到比准基数小的元素
                     // 说明high位置右边元素都不小于准基数
                     break;
                 }
+
                 // low下标位置开始，向右边遍历，查找不小于基准数的元素
                 while (low < high && s[low] <= key) {
                     low++;
                 }
-                if (low < high) {// 找到比基准数大的元素
-                    s[high] = s[low];// 赋值给high下标位置，high下标位置元素已经与基准数对比过了
-                    high--;// high下标前移，
-                } else {// 没有找到比基准数小的元素
+
+                if (low < high) {
+                    // 找到比基准数大的元素
+                    // 赋值给high下标位置，high下标位置元素已经与基准数对比过了
+                    s[high] = s[low];
+                    // high下标前移
+                    high--;
+                } else {
+                    // 没有找到比基准数小的元素
                     // 说明low位置左边元素都不大于基准数
                     break;
                 }
             }
-            s[low] = key;// low下标赋值基准数
+            // low下标赋值基准数
+            s[low] = key;
             this.quickSort(left, low - 1);
             this.quickSort(low + 1, right);
         }
@@ -89,7 +102,6 @@ public class N1018 {
             System.out.println(this.s[i]);
         }
     }
-
 
     public static void main(String[] args) {
         N1018 n = new N1018();
