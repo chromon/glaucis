@@ -14,13 +14,13 @@ import java.lang.reflect.Array;
 @SuppressWarnings("unchecked")
 public class MyVector<T> {
 
-    // 默认初始容量
+    /* 默认初始容量，物理空间大小 */
     private final int DEFAULT_CAPACITY = 5;
 
-    // 数据大小
+    // 数据大小，逻辑空间大小
     private int _size;
 
-    // 实际容量
+    // 实际容量，物理空间大小
     private int _capacity;
 
     // 数据存储空间
@@ -33,6 +33,7 @@ public class MyVector<T> {
     public MyVector() {
 
         // 通过反射创建数组，使用默认大小
+        this._capacity = this.DEFAULT_CAPACITY;
         this._elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), this.DEFAULT_CAPACITY);
 
         // 初始化数据大小
@@ -46,6 +47,7 @@ public class MyVector<T> {
     public MyVector(int _capacity) {
 
         // 通过反射创建数组，手动初始化大小
+        this._capacity = _capacity;
         this._elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), _capacity);
 
         // 初始化数据大小
@@ -63,6 +65,7 @@ public class MyVector<T> {
 
         // 分配空间
         this(2 * (hi - lo));
+        this._capacity = 2 * (hi - lo);
         // 规模清零
         this._size = 0;
 
@@ -80,10 +83,11 @@ public class MyVector<T> {
 
         // 分配空间
         this(2 * (hi - lo));
+        this._capacity = 2 * (hi - lo);
         // 规模清零
         this._size = 0;
 
-        this.copyFrom(v, lo, hi);
+        this.copyFrom(v._elem, lo, hi);
     }
 
     /**
@@ -93,6 +97,13 @@ public class MyVector<T> {
      */
     public MyVector(MyVector<T> v) {
 
+        // 分配空间
+        this(2 * v._size);
+        this._capacity = 2 * v._size;
+        // 规模清零
+        this._size = 0;
+
+        this.copyFrom(v._elem, 0, v._size);
     }
 
     /**
@@ -105,11 +116,52 @@ public class MyVector<T> {
     private void copyFrom(T[] a, int lo, int hi) {
 
         while (lo < hi) {
-            _elem[_size ++] = a[lo ++];
+            this._elem[this._size ++] = a[lo ++];
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * 向量空间不足时，动态扩容
+     */
+    private void expand() {
 
+        if (_size >= _capacity) {
+
+            T[] oldElem = _elem;
+            _elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), _capacity <<= 1);
+
+            for (int i = 0; i < _size; i ++) {
+                _elem[i] = oldElem[i];
+            }
+        }
     }
+
+    /**
+     * 获取向量元素
+     *
+     * @param i 向量元素下标
+     * @return 向量元素
+     */
+    private T get(int i) {
+
+        return _elem[i];
+    }
+
+
+    private int insert(int r, T e) {
+
+        // 如有需要进行扩容
+        this.expand();
+
+        for (int i = _size; i > r; i --) {
+            _elem[i] = _elem[i - 1];
+        }
+
+        // 添加新元素，容量增加
+        _elem[r] = e;
+        _size ++;
+
+        return r;
+    }
+
 }
