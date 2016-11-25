@@ -12,7 +12,7 @@ import java.lang.reflect.Array;
  */
 
 @SuppressWarnings("unchecked")
-public class MyVector<T> {
+public class MyVector<T extends Comparable<T>> {
 
     /* 默认初始容量，物理空间大小 */
     private final int DEFAULT_CAPACITY = 5;
@@ -144,24 +144,182 @@ public class MyVector<T> {
      */
     private T get(int i) {
 
-        return _elem[i];
+        return this._elem[i];
     }
 
-
+    /**
+     * 向量中插入元素
+     *
+     * @param r 插入位置
+     * @param e 插入内容
+     * @return 返回插入位置
+     */
     private int insert(int r, T e) {
 
         // 如有需要进行扩容
         this.expand();
 
-        for (int i = _size; i > r; i --) {
-            _elem[i] = _elem[i - 1];
+        for (int i = this._size; i > r; i --) {
+            this._elem[i] = this._elem[i - 1];
         }
 
         // 添加新元素，容量增加
-        _elem[r] = e;
-        _size ++;
+        this._elem[r] = e;
+        this._size ++;
 
         return r;
+    }
+
+    /**
+     * 区间删除
+     *      删除 [lo, hi) 之间的内容
+     *
+     * @param lo 删除区间起始位置，闭区间
+     * @param hi 删除区间结束位置，开区间
+     * @return 被删除的元素数目
+     */
+    private int remove(int lo, int hi) {
+
+        if (lo == hi) {
+            return 0;
+        }
+
+        while (hi < this._size) {
+            this._elem[lo ++] = this._elem[hi ++];
+        }
+
+        this._size = lo;
+        // 有必要时缩容
+        // this.shrink();
+
+        return hi - lo;
+    }
+
+    /**
+     * 删除秩为 r 的元素
+     * @param r 被删除元素的秩
+     * @return 被删除元素
+     */
+    private T remove(int r) {
+
+        // 备份被删除元素
+        T e = this._elem[r];
+        this.remove(r, r + 1);
+        return e;
+    }
+
+    /**
+     * 无序向量查找向量中元素为 e 的秩
+     * @param e 被查找元素
+     * @param lo 查找区间起始
+     * @param hi 查找区间结束
+     * @return 命中多个元素时返回秩最大的，如果没有找到返回 lo - 1，具体是否命中由上层调用者判断
+     */
+    private int find(T e, int lo, int hi) {
+
+        while (lo < hi) {
+            if (this._elem[hi] == e) {
+                break;
+            }
+            hi --;
+        }
+        return hi;
+    }
+
+    /**
+     * 向量遍历
+     */
+    private void traverse() {
+
+        for (int i = 0; i < this._size; i ++) {
+            System.out.println(this._elem[i]);
+        }
+    }
+
+    /**
+     * 逆序对总数
+     * @return 返回相邻元素逆序对的总数
+     */
+    private int disordered() {
+
+        // 逆序对计数器
+        int n = 0;
+
+        for (int i = 1; i < this._size; i ++) {
+            if (this._elem[i - 1].compareTo(this._elem[i]) > 0) {
+                // 如果仅需判断是否有序，首次遇到逆序时即可终止
+                n ++;
+            }
+        }
+
+        // 当且仅当 n = 0 时，向量有序
+        return n;
+    }
+
+    /**
+     * 有序向量唯一化（较低效 O(n^2)）
+     *      前后比较是否相同，相同则删掉，后续前移
+     * @return 向量规模变化量，即删除的元素总数
+     */
+    private int uniquify() {
+
+        // 原大小，_size大小由 remove 方法控制
+        int oldSize = this._size;
+
+        int i = 0;
+        while (i < this._size - 1) {
+            // 相同删除后一个，否则转至后一个
+            if (this._elem[i] == this._elem[i + 1]) {
+                this.remove(i + 1);
+            } else{
+                i ++;
+            }
+        }
+
+        // 向量规模变化量，即删除的元素总数
+        return oldSize - this._size;
+    }
+
+    /**
+     * 有序向量去重（高效版 O(n)）
+     *      前后比较直到出现不同，将其直接前移
+     * @return 被删除元素总数
+     */
+    private int uniquify2() {
+
+        int i = 0, j = 0;
+
+        while (++ j < this._size) {
+            if (this._elem[i] != this._elem[j]) {
+                this._elem[++ i] = this._elem[j];
+            }
+        }
+
+        // 去除尾部多余元素
+        this._size = ++ i;
+        // this.shrink();
+
+        return j - i;
+    }
+
+    /**
+     * 有序向量查找接口
+     *      约定：有序向量区间v[lo, hi)中，确定不大于 e 的最后一个元素的秩
+     *          若 - < e < v[lo], 则返回 lo - 1
+     *          若 v[hi] < e < +, 则返回 hi - 1
+     *
+     * @param e 被查找元素
+     * @param lo 查找起始区间
+     * @param hi 查找结束区间
+     * @return 查找元素的秩
+     */
+    private int search(T e, int lo, int hi) {
+
+        // 二分查找
+        return binSearch(this._elem, e, lo ,hi);
+
+        // 斐波那契查找
+        // return fibSearch(this._elem, e, lo, hi);
     }
 
 }
