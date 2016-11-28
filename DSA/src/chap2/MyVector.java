@@ -322,4 +322,159 @@ public class MyVector<T extends Comparable<T>> {
         // return fibSearch(this._elem, e, lo, hi);
     }
 
+    /**
+     * 二分查找
+     *
+     * @param a 被查找元素数组
+     * @param e 被查找元素
+     * @param lo 被查找起始区间
+     * @param hi 被查找结束区间
+     * @return 命中元素的秩或 -1
+     */
+    private int binSearch(T[] a, T e, int lo, int hi) {
+
+        // 有效查找区间长度缩短为 1 时结束
+        while (1 < hi - lo) {
+            int mi = (hi + lo) >> 1;
+            if (e.compareTo(a[mi]) < 0) {
+                // [lo, mi)
+                hi = mi;
+            } else {
+                // [mi, hi]
+                lo = mi;
+            }
+        }
+
+        // 返回命中元素的秩或 -1
+        return (e == a[lo]) ? lo: -1;
+    }
+
+    /**
+     * 二分查找（改进版）
+     *      符合规范：返回不大于 e 的最后一个元素的秩
+     * @param a 被查找元素数组
+     * @param e 被查找元素
+     * @param lo 被查找起始区间
+     * @param hi 被查找结束区间
+     * @return 命中元素的秩或 -1
+     */
+    private int binSearch2(T[] a, T e, int lo, int hi) {
+
+        // 有效查找区间长度缩短为 1 时结束
+        while (lo < hi) {
+            int mi = (hi + lo) >> 1;
+            if (e.compareTo(a[mi]) < 0) {
+                // [lo, mi)
+                hi = mi;
+            } else {
+                // (mi, hi]
+                lo = mi + 1;
+            }
+        }
+
+        // 返回命中元素的秩或 -1
+        return -- lo;
+    }
+
+    /**
+     * 改进版冒泡排序，最好 O(n)，最坏 O(n^2)
+     *      记录最后一个逆序对的位置 a，所以只用判断 [lo, a] 的内容，而 a 后面不用考虑
+     * @param lo 排序起始区间
+     * @param hi 排序结束区间
+     */
+    private void bubbleSort(int lo, int hi) {
+
+        // 逐趟扫描交换
+        while (lo < hi) {
+            hi = bubble(lo, hi);
+        }
+    }
+
+    /**
+     * 一趟冒泡排序
+     * @param lo 排序起始区间
+     * @param hi 排序结束区间
+     * @return 最右侧逆序对的位置
+     */
+    private int bubble(int lo, int hi) {
+
+        // 最右侧逆序对位置初始化为 [lo - 1, lo]
+        int last = lo;
+
+        while (++ lo < hi) {
+            // 逆序则交换
+            if (this._elem[lo - 1].compareTo(this._elem[lo]) > 0) {
+
+                // 更新最右侧逆序对的位置为新的 lo
+                last = lo;
+
+                T temp = this._elem[lo -1];
+                this._elem[lo - 1] = this._elem[lo];
+                this._elem[lo] = temp;
+            }
+        }
+        // 返回最右侧逆序对的位置
+        return last;
+    }
+
+    /**
+     * 归并排序 O(nlogn)
+     * @param lo 起始区间，闭区间
+     * @param hi 结束区间，开区间
+     */
+    private void mergeSort(int lo, int hi) {
+        if (hi - lo >= 2) {
+            int mi = (lo + hi) >> 1;
+
+            // 前后两段分开排序
+            this.mergeSort(lo, mi);
+            this.mergeSort(mi, hi);
+
+            // 二路归并
+            this.merge(lo, mi, hi);
+        }
+    }
+
+    /**
+     * 归并排序 合并
+     * @param lo 起始区间，闭区间
+     * @param mi 区间分隔
+     * @param hi 结束区间，开区间
+     */
+    private void merge(int lo, int mi, int hi) {
+
+        T[] a = this._elem;
+        // 复制向量，将 _elem lo后的内容复制到向量a，即a[0, hi - lo) = _elem[lo, hi)
+        System.arraycopy(a, lo, a, 0, (hi - lo));
+
+        int lb = mi - lo;
+        // 复制前子向量，b[0, mi - lo) = _elem[lo, mi)
+        T[] b = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), lb);
+
+        for (int i = 0; i < lb; i ++) {
+            b[i] = a[i];
+        }
+
+        int lc = hi - mi;
+        // 复制后子向量，c[0, hi - mi) = _elem[mi, hi)
+        T[] c = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), lc);
+        System.arraycopy(a, mi, c, 0, (hi - mi));
+
+        int i = 0, j = 0, k = 0;
+        // j 和 k 至少有一个不越界，否则退出
+        while ((j < lb) || (k < lc)) {
+            // j 不越界；同时，c 越界或 b[j] <= c[k]
+            // 即向量 b 还有剩余的同时，如果向量 c 为空，将 b 余下内容复制到 a
+            // 如果向量 c 不为空，那么如果 b[j] <= c[k]，将 b 首位复制到 a
+            if ((j < lb) && (lc <= k || (b[j].compareTo(c[k]) <= 0))) {
+                a[i ++] = b[j ++];
+            }
+
+            // k 不越界；同时，b 越界或 c[k] < b[j]
+            if((k < lc) && (lb <= j || (c[k].compareTo(b[j]) < 0))) {
+                a[i ++] = c[k ++];
+            }
+        }
+    }
+
 }
