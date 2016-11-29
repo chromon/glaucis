@@ -10,7 +10,6 @@ import java.util.Arrays;
 
 public class MergeSortTest {
 
-    private static int count = 0;
     /**
      * 归并排序 O(nlogn)
      * @param lo 起始区间，闭区间
@@ -51,8 +50,6 @@ public class MergeSortTest {
                 temp[k ++] = _elem[i ++];
             } else {
                 temp[k ++] = _elem[j ++];
-
-                count += mi - i;
             }
         }
 
@@ -72,16 +69,10 @@ public class MergeSortTest {
         }
     }
 
-    private static void display() {
-        System.out.println(MergeSortTest.count);
-    }
-
     public static void main(String[] args) {
 
-//        int[] _elem = {2, 7, 8, 3, 1, 6, 9, 0, 5, 4};
-        int[] _elem = {2, 4, 3, 1};
+        int[] _elem = {2, 7, 8, 3, 1, 6, 9, 0, 5, 4};
         MergeSortTest.mergeSort(_elem, 0, _elem.length);
         System.out.println(Arrays.toString(_elem));
-        MergeSortTest.display();
     }
 }
