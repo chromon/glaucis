@@ -32,6 +32,7 @@ import java.io.*;
 public class N1019 {
 
     private int n;
+    private int count;
 
     private int[] s;
 
@@ -55,18 +56,72 @@ public class N1019 {
         }
     }
 
-    private void inverse() {
+    /**
+     * 归并排序 O(nlogn)
+     * @param lo 起始区间，闭区间
+     * @param hi 结束区间，开区间
+     */
+    public int[] mergeSort(int[] _elem, int lo, int hi) {
 
-        int t = 0;
-        for (int i = 0; i < this.n - 1; i ++) {
-            for (int j = i + 1; j < this.n; j ++) {
-                if (s[i] > s[j]) {
-                    t ++;
-                }
+        int mi = (lo + hi) >> 1;
+        if (2 <= hi - lo) {
+            // 前后两段分开排序
+            mergeSort(_elem, lo, mi);
+            mergeSort(_elem, mi , hi);
+
+            // 前后二路归并
+            merge(_elem, lo, mi, hi);
+        }
+        return _elem;
+    }
+
+    /**
+     * 归并排序 二路归并
+     * @param lo 起始区间，闭区间
+     * @param mi 区间分隔
+     * @param hi 结束区间，开区间
+     */
+    public void merge(int[] _elem, int lo, int mi, int hi) {
+
+        // 临时数组
+        int k = 0;
+        int[] temp = new int[hi - lo];
+
+        // 前后分段起始位置
+        int i = lo, j = mi;
+
+        // 把较小的数先移到新数组中。两段中一段越界，就全部终止，另一段剩余部分直接复制到临时数组
+        while (i < mi && j < hi) {
+            if (_elem[i] <= _elem[j]) {
+                temp[k ++] = _elem[i ++];
+            } else {
+                temp[k ++] = _elem[j ++];
+
+                count += mi - i;
             }
         }
 
-        out.println(t);
+        // 把前一分段剩余的数移入数组
+        while (i < mi) {
+            temp[k ++] = _elem[i ++];
+        }
+
+        // 把一分段剩余的数移入数组
+        while (j < hi) {
+            temp[k ++] = _elem[j ++];
+        }
+
+        // 把新数组中的数覆盖 _elem 数组
+        for (k = 0; k < temp.length; k++) {
+            _elem[k + lo] = temp[k];
+        }
+    }
+
+    private void inverse() {
+
+        this.mergeSort(s, 0, s.length);
+
+        out.println(this.count);
         out.flush();
     }
 
