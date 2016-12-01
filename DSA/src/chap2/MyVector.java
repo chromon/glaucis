@@ -26,15 +26,19 @@ public class MyVector<T extends Comparable<T>> {
     // 数据存储空间
     private T[] _elem;
 
+    // 存储元素类型
+    private Class<T> clazz;
+
     /**
      * 构造方法
      *      使用默认的初始容量创建
      */
-    public MyVector() {
+    public MyVector(Class<T> clazz) {
 
         // 通过反射创建数组，使用默认大小
         this._capacity = this.DEFAULT_CAPACITY;
-        this._elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), this.DEFAULT_CAPACITY);
+        this.clazz = clazz;
+        this._elem = (T[]) Array.newInstance(this.clazz, this.DEFAULT_CAPACITY);
 
         // 初始化数据大小
         this._size = 0;
@@ -44,11 +48,12 @@ public class MyVector<T extends Comparable<T>> {
      * 构造方法
      * @param _capacity 自定义容量大小
      */
-    public MyVector(int _capacity) {
+    public MyVector(int _capacity, Class<T> clazz) {
 
         // 通过反射创建数组，手动初始化大小
         this._capacity = _capacity;
-        this._elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), _capacity);
+        this.clazz = clazz;
+        this._elem = (T[]) Array.newInstance(clazz, _capacity);
 
         // 初始化数据大小
         this._size = 0;
@@ -61,10 +66,11 @@ public class MyVector<T extends Comparable<T>> {
      * @param lo 复制区间起始点，闭区间
      * @param hi 复制区间结束点，开区间
      */
-    public MyVector(T[] a, int lo, int hi) {
+    public MyVector(T[] a, int lo, int hi, Class<T> clazz) {
 
         // 分配空间
-        this(2 * (hi - lo));
+        this(2 * (hi - lo), clazz);
+        this.clazz = clazz;
         this._capacity = 2 * (hi - lo);
         // 规模清零
         this._size = 0;
@@ -79,10 +85,11 @@ public class MyVector<T extends Comparable<T>> {
      * @param lo 复制区间起始点，闭区间
      * @param hi 复制区间结束点，开区间
      */
-    public MyVector(MyVector<T> v, int lo, int hi) {
+    public MyVector(MyVector<T> v, int lo, int hi, Class<T> clazz) {
 
         // 分配空间
-        this(2 * (hi - lo));
+        this(2 * (hi - lo), clazz);
+        this.clazz = clazz;
         this._capacity = 2 * (hi - lo);
         // 规模清零
         this._size = 0;
@@ -95,10 +102,11 @@ public class MyVector<T extends Comparable<T>> {
      *      从整个向量复制
      * @param v 被复制的向量
      */
-    public MyVector(MyVector<T> v) {
+    public MyVector(MyVector<T> v, Class<T> clazz) {
 
         // 分配空间
-        this(2 * v._size);
+        this(2 * v._size, clazz);
+        this.clazz = clazz;
         this._capacity = 2 * v._size;
         // 规模清零
         this._size = 0;
@@ -128,7 +136,7 @@ public class MyVector<T extends Comparable<T>> {
         if (_size >= _capacity) {
 
             T[] oldElem = _elem;
-            _elem = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), _capacity <<= 1);
+            _elem = (T[]) Array.newInstance(this.clazz, _capacity <<= 1);
 
             for (int i = 0; i < _size; i ++) {
                 _elem[i] = oldElem[i];
@@ -449,7 +457,7 @@ public class MyVector<T extends Comparable<T>> {
 
         int lb = mi - lo;
         // 复制前子向量，b[0, mi - lo) = _elem[lo, mi)
-        T[] b = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), lb);
+        T[] b = (T[]) Array.newInstance(this.clazz, lb);
 
         for (int i = 0; i < lb; i ++) {
             b[i] = a[i];
@@ -457,7 +465,7 @@ public class MyVector<T extends Comparable<T>> {
 
         int lc = hi - mi;
         // 复制后子向量，c[0, hi - mi) = _elem[mi, hi)
-        T[] c = (T[]) Array.newInstance(this._elem.getClass().getComponentType(), lc);
+        T[] c = (T[]) Array.newInstance(this.clazz, lc);
         System.arraycopy(a, mi, c, 0, (hi - mi));
 
         int i = 0, j = 0, k = 0;
