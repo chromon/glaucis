@@ -8,16 +8,17 @@ import java.util.Arrays;
  * Created by Ellery on 2016/12/1.
  */
 
+@SuppressWarnings("unchecked")
 public class ArrayMaker<T> {
 
     private Class<T> type;
 
-    public ArrayMaker(Class<T> type) {
+    private ArrayMaker(Class<T> type) {
         this.type = type;
     }
 
-    @SuppressWarnings("unchecked")
-    T[] createArray(int size) {
+
+    private T[] createArray(int size) {
         return (T[]) Array.newInstance(type, size);
     }
 
