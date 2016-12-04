@@ -41,18 +41,22 @@ public class StackPermutation {
             a.push(i);
         }
 
+        // 循环栈 B 的可能结果
         for (int i = 1; i <= n; i ++) {
 
             if (!s.empty() && (s.top() == bb[i - 1])) {
+                // S 栈顶与 B 的目标栈匹配
                 b.push(s.pop());
                 this.operate[k ++] = "pop";
             } else if (!a.empty() && (a.top() == bb[i - 1])) {
+                // A 的栈顶与 B 的目标栈匹配
                 b.push(a.pop());
                 this.operate[k ++] = "push";
                 this.operate[k ++] = "pop";
             } else {
                 s.push(a.pop());
                 this.operate[k ++] = "push";
+                // A S 均不与 B 匹配
                 i --;
                 if(a.empty()) {
                     break;
@@ -62,6 +66,7 @@ public class StackPermutation {
 
         String s1 = "", s2 = "";
 
+        // 目标结果
         System.out.print("target:");
         for (int i = bb.length - 1; 0 <= i; i --) {
             s1 += bb[i];
@@ -69,6 +74,7 @@ public class StackPermutation {
         }
         System.out.println();
 
+        // 实际结果
         System.out.print("result:");
         for (int i = b.size(); 0 < i; i --) {
             s2 += b.top();
@@ -76,15 +82,15 @@ public class StackPermutation {
         }
         System.out.println();
 
+        // 是否匹配
         if (s1.equals(s2)) {
             System.out.println("mapping");
+            for (int i = 0; i < k; i ++) {
+                System.out.print(this.operate[i] + " ");
+            }
         } else {
             System.out.println("not mapping");
         }
-        for (int i = 0; i < k; i ++) {
-            System.out.print(this.operate[i] + " ");
-        }
-        System.out.println();
     }
 
     public static void main(String[] args) {
