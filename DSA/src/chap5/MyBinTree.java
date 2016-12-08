@@ -66,6 +66,10 @@ package chap5;
  * Created by Ellery on 2016/12/6.
  */
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 /**
  * 树节点类
  * @param <T>
@@ -218,6 +222,7 @@ public class MyBinTree<T extends Comparable<T>> {
         this._size ++;
 
         x.insertAsRC(e);
+        this.updateHeightAbove(x);
 
         return x.rChild;
     }
@@ -233,23 +238,172 @@ public class MyBinTree<T extends Comparable<T>> {
         this._size ++;
 
         x.insertAsLC(e);
+        this.updateHeightAbove(x);
 
         return x.lChild;
     }
 
-    public void travLevel() {
-
+    /**
+     * 输出节点数据
+     * @param e 待输出数据
+     */
+    public void visit(T e) {
+        System.out.println(e);
     }
 
-    public void travPre() {
+    /**
+     * 先序遍历（递归）
+     * @param x
+     */
+    public void travPreRecursion(BinNode<T> x) {
+        if (x == null) {
+            return;
+        }
 
+        this.visit(x.data);
+        this.travPreRecursion(x.lChild);
+        this.travPreRecursion(x.rChild);
     }
 
-    public void travIn() {
+    /**
+     * 先序遍历（迭代）
+     * @param x 待遍历节点
+     */
+    public void travPreIteration(BinNode<T> x) {
+
+        Stack<BinNode<T>> s = new Stack<>();
+
+        if(x != null) {
+            s.push(x);
+        }
+
+        while(! s.empty()) {
+            x = s.pop();
+            this.visit(x.data);
+
+            // 每次都是弹出栈时被访问，所以应先将右子树推入栈中，后将左子树入栈
+            // 以使得左子树先被访问
+            if (x.rChild != null) {
+                s.push(x.rChild);
+            }
+
+            if (x.lChild != null) {
+                s.push(x.lChild);
+            }
+        }
+    }
+
+    /**
+     * 先序遍历访问左侧链算法
+     *      访问树的左侧链，右侧链入栈缓冲
+     * @param x 待遍历节点
+     * @param s 右分支栈
+     */
+    public void visitAlongLeftBranch(BinNode<T> x, Stack<BinNode<T>> s) {
+        while (x != null) {
+            // 访问节点
+            this.visit(x.data);
+            // 右子树入栈
+            s.push(x.rChild);
+            // 沿左侧下行
+            x = x.lChild;
+        }
+    }
+
+    /**
+     * 先序遍历
+     * @param x 待遍历节点
+     */
+    public void travPre(BinNode<T> x) {
+        Stack<BinNode<T>> s = new Stack<>();
+        while (true) {
+            this.visitAlongLeftBranch(x, s);
+            if (s.empty()) {
+                break;
+            }
+            x = s.pop();
+        }
+    }
+
+    /**
+     * 中序遍历（递归）
+     * @param x 待遍历节点
+     */
+    public void travInRecursion(BinNode<T> x) {
+        if (x == null) {
+            return;
+        }
+
+        this.travInRecursion(x.lChild);
+        this.visit(x.data);
+        this.travInRecursion(x.rChild);
+    }
+
+    /**
+     * 中序遍历算法访问左侧链算法
+     * @param x 待遍历节点
+     * @param s 左侧链栈
+     */
+    public void goAlongLeftBranch(BinNode<T> x, Stack<BinNode<T>> s) {
+
+        // 沿右分支到底
+        while (x != null) {
+            s.push(x);
+            x = x.lChild;
+        }
+    }
+
+    /**
+     * 中序遍历（迭代）
+     * @param x 待遍历节点
+     */
+    public void travIn(BinNode<T> x) {
+        Stack<BinNode<T>> s = new Stack<>();
+
+        while (true) {
+            // 从当前节点出发，逐批入栈
+            this.goAlongLeftBranch(x, s);
+            if (s.empty()) {
+                break;
+            }
+
+            // 此时 x 的左子树为空，或已被访问（等效为空），此时直接访问 x
+            x = s.pop();
+            this.visit(x.data);
+
+            // 转向 x 的右子树
+            x = x.rChild;
+        }
 
     }
 
     public void travPost() {
 
+    }
+
+    /**
+     * 层序遍历
+     * @param x 待遍历节点
+     */
+    public void travLevel(BinNode<T> x) {
+
+        Queue<BinNode<T>> q = new LinkedList<>();
+        // offer == enqueue
+        q.offer(x);
+
+        while (!q.isEmpty()) {
+            // pol == dequeue
+            x = q.poll();
+
+            this.visit(x.data);
+
+            if (x.lChild != null) {
+                q.offer(x.lChild);
+            }
+
+            if (x.rChild != null) {
+                q.offer(x.rChild);
+            }
+        }
     }
 }
