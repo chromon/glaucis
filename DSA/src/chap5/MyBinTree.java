@@ -377,7 +377,60 @@ public class MyBinTree<T extends Comparable<T>> {
 
     }
 
-    public void travPost() {
+    /**
+     * 后序遍历（递归）
+     * @param x 待遍历节点
+     */
+    public void travPostRecursion(BinNode<T> x) {
+        if (x == null) {
+            return;
+        }
+
+        this.travPostRecursion(x.lChild);
+        this.travPostRecursion(x.rChild);
+        this.visit(x.data);
+    }
+
+    /**
+     * 找到 x 节点为根的二叉树最右边的叶子节点
+     * @param s
+     */
+    public void goLeftHighestLeaf(Stack<BinNode<T>> s) {
+        BinNode<T> x;
+        while ((x  = s.peek()) != null) {
+            if (x.lChild != null) {
+                // 尽可能向左，如有右孩子先入栈
+                if (x.rChild != null) {
+                    s.push(x.rChild);
+                }
+                // 然后在左孩子入栈（因为是栈，后进先出）
+                s.push(x.lChild);
+            } else {
+                // 没有左子树，则右子树入栈
+                s.push(x.rChild);
+            }
+            // 去掉栈顶的 x
+            s.pop();
+        }
+    }
+
+    public void travPost(BinNode<T> x) {
+        Stack<BinNode<T>> s = new Stack<>();
+
+        // 根节点入栈
+        if (x != null) {
+            s.push(x);
+        }
+
+        //若栈顶非当前节点之父，（则必为其右兄弟）
+        // 此时需要在以其右兄弟为根节点的子树中找到最左侧的叶子节点（left highest leaf）
+        while (! s.empty()) {
+            if (s.peek() != x.parent) {
+                this.goLeftHighestLeaf(s);
+            }
+            x = s.pop();
+            this.visit(x.data);
+        }
 
     }
 
