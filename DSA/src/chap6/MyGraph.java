@@ -13,7 +13,9 @@ package chap6;
  */
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * 顶点状态
@@ -213,7 +215,82 @@ public class MyGraph<T extends Comparable<T>> {
         return this.nextNbr(i, this.v.size());
     }
 
+    /**
+     * 边的数据
+     * @param i 顶点
+     * @param j 顶点
+     * @return 边的数据
+     */
     public T edge(int i, int j) {
         return e.get(i).get(j).data;
+    }
+
+    /**
+     * 边的状态
+     * @param i 顶点
+     * @param j 顶点
+     * @return 边状态
+     */
+    public EStatus status(int i, int j) {
+        return e.get(i).get(j).status;
+    }
+
+    /**
+     * 边的权重
+     * @param i 顶点
+     * @param j 顶点
+     * @return 权重
+     */
+    public int weight(int i, int j) {
+        return e.get(i).get(j).weight;
+    }
+
+    /**
+     * 顶点 i 和顶点 j 之间插入一条权重为 w 的边
+     * @param e 边
+     * @param w 权重
+     * @param i 顶点
+     * @param j 顶点
+     */
+    public void insert(Edge<T> e,int w, int i, int j) {
+        if (! exists(i, j)) {
+            this.e.get(i).set(j, e);
+            // 边由 i => j 更改出度、入度
+            this.v.get(i).outDegree ++;
+            this.v.get(j).inDegree ++;
+        }
+    }
+
+    /**
+     * 删除顶点 i 与顶点 j 之间的边
+     * @param i 顶点
+     * @param j 顶点
+     * @return 删除的边
+     */
+    public Edge<T> remove(int i, int j) {
+
+        // 备份
+        Edge<T> e = this.e.get(i).get(j);
+
+        this.e.get(i).set(j, null);
+
+        // 边由 i => j
+        this.v.get(i).outDegree --;
+        this.v.get(j).inDegree --;
+
+        return e;
+    }
+
+    /**
+     * 广度优先搜索
+     *      相当于二叉树的层序遍历
+     * @param v 起点顶点
+     * @param clock
+     */
+    public void bfs(int v, int clock) {
+        Queue<Vertex<T>> q = new LinkedList<Vertex<T>>();
+        this.v.get(v).status = VStatus.DISCOVERED;
+        q.offer(this.v);
+
     }
 }
