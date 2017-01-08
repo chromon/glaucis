@@ -66,7 +66,7 @@ class Vertex<T extends Comparable<T>> {
  * 边状态
  */
 enum EStatus {
-    UNDISCOVERED,
+    UNDETERMINED,
     TREE,
     CROSS,
     FORWARD,
@@ -89,7 +89,7 @@ class Edge<T extends Comparable<T>> {
     public Edge(T e, int w) {
         this.data = e;
         this.weight = w;
-        this.status = EStatus.UNDISCOVERED;
+        this.status = EStatus.UNDETERMINED;
     }
 }
 
@@ -283,14 +283,78 @@ public class MyGraph<T extends Comparable<T>> {
 
     /**
      * 广度优先搜索
-     *      相当于二叉树的层序遍历
+     *      访问一个顶点后，连续访问其所有邻接顶点，相当于二叉树的层序遍历
      * @param v 起点顶点
-     * @param clock
+     * @param clock 时钟
      */
     public void bfs(int v, int clock) {
-        Queue<Vertex<T>> q = new LinkedList<Vertex<T>>();
-        this.v.get(v).status = VStatus.DISCOVERED;
-        q.offer(this.v);
 
+        // 初始化
+        Queue<Integer> q = new LinkedList<>();
+        this.v.get(v).status = VStatus.DISCOVERED;
+        // enqueue
+        q.offer(v);
+
+        while (! q.isEmpty()) {
+            // dequeue
+            v = q.poll();
+            this.v.get(v).dTime = ++clock;
+
+            // 考察 v 的每一个邻接
+            for (int u = this.firstNbr(v); -1 < u; u = this.nextNbr(v, u)) {
+                // 视 u 的状态分别处理
+                if (VStatus.UNDISCOVERED == this.v.get(u).status) {
+                    // 顶点 v 尚未被发现
+                    // 处理顶点
+                    this.v.get(u).status = VStatus.DISCOVERED;
+                    q.offer(u);
+
+                    // 处理边，树边
+                    this.e.get(v).get(u).status = EStatus.TREE;
+
+                    this.v.get(u).parent = v;
+
+                }else {
+                    // 顶点 v 已被发现（在队列中），或者已经访问完
+                    // 归类为跨边
+                    this.e.get(v).get(u).status = EStatus.CROSS;
+                }
+            }
+
+            this.v.get(v).status = VStatus.VISITED;
+        }
+    }
+
+    /**
+     * 深度优先搜索
+     *      访问一个顶点后，任选一个其邻接顶点继续执行dfs
+     * @param v 起始顶点
+     * @param clock 时钟
+     */
+    public void dfs(int v, int clock) {
+        this.v.get(v).dTime = ++ clock;
+        this.v.get(v).status = VStatus.DISCOVERED;
+
+        // 枚举所有邻居
+        for (int u = this.firstNbr(v); -1 < u; u = this.nextNbr(v, u)) {
+           switch (this.v.get(u).status) {
+               case UNDISCOVERED:
+                   // u 尚未被发现，意味着支撑树可以在此扩展
+                   this.e.get(v).get(u).status = EStatus.TREE;
+                   this.v.get(u).parent = v;
+                   this.dfs(u, clock);
+                   break;
+               case DISCOVERED:
+                   // u 已被发现，但尚未被访问，应属于被后代指向的祖先
+                   this.e.get(v).get(u).status = EStatus.BACKWARD;
+                   break;
+               default:
+                   // u 已被访问，则视承袭关系为前向边或跨边
+                   this.e.get(v).get(u).status = this.v.get(v).dTime < this.v.get(u).dTime? EStatus.FORWARD: EStatus.CROSS;
+           }
+        }
+
+        this.v.get(v).fTime = ++ clock;
+        this.v.get(v).status = VStatus.VISITED;
     }
 }
