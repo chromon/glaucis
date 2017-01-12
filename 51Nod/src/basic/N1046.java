@@ -50,8 +50,25 @@ public class N1046 {
         System.out.println(ret);
     }
 
+    private long power(long a, long N, long mod) {
+        long result = 1;
+        while(N > 0){
+            if(N % 2 == 1) {
+                result = (result * a) % mod;
+            }
+            a = (a * a) % mod;
+            N /= 2;
+        }
+        return result;
+    }
+
+    private void display() {
+        System.out.println(this.power(this.a, this.b, this.c));
+    }
+
     public static void main(String[] args) {
         N1046 n = new N1046();
-        n.modeXp();
+//        n.modeXp();
+        n.display();
     }
 }
