@@ -107,6 +107,20 @@ public class MyBinTree<T extends Comparable<T>> {
         return this._root;
     }
 
+    public boolean hasLChild(BinNode<T> p) {
+        if (p.lChild != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasRChild(BinNode<T> p) {
+        if (p.rChild != null) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 节点高度
      * @param p 待查询节点

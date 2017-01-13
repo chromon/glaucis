@@ -55,19 +55,91 @@ public class MyBST<T extends Comparable<T>> extends MyBinTree {
         }
 
         // 记录当前非空节点
-        hot = v;
+        this._hot = v;
 
         v = (e.compareTo(v.data) < 0)? v.lChild: v.rChild;
 
         return searchIn(v, e, hot);
     }
 
+    /**
+     * 插入算法
+     * @param e
+     * @return
+     */
     public BinNode<T> insert(T e) {
         BinNode<T> x = this.search(e);
         if (x == null) {
-            x = new BinNode<T>(e, _hot);
+            x = new BinNode<>(e, _hot);
             _size ++;
             updateHeightAbove(x);
         }
+        return x;
     }
+
+    /**
+     * 删除算法
+     * @param e 待删除元素
+     * @return 是否删除
+     */
+    public boolean remove(T e) {
+        // 定位目标节点
+        BinNode<T> x = this.search(e);
+        if (x == null) {
+            // 目标不存在，此时 _hot 为 x 节点的父亲节点
+            return false;
+        }
+        this.removeAt(x, _hot);
+
+        // 更新大小与树高
+        _size --;
+        updateHeightAbove(_hot);
+        return true;
+    }
+
+    public BinNode<T> removeAt(BinNode<T> x, BinNode<T> hot) {
+        // 实际要被删除的节点
+        BinNode<T> w = x;
+        // 实际被删除节点的替代者
+        BinNode<T> succ = null;
+
+        if (!hasLChild(x)) {
+            // 左子树为空
+            x = x.rChild;
+            succ = x;
+        } else if (!hasRChild(x)) {
+            // 右子树为空
+            x = x.lChild;
+            succ = x;
+        } else {
+            // 左右子树均存在
+            w = w.succ();
+
+            // swap
+            T t = w.data;
+            w.data = x.data;
+            x.data = t;
+
+            BinNode<T> u = w.parent;
+            if (u == x) {
+                succ = w.rChild;
+                u.rChild = succ;
+            } else {
+                succ = w.rChild;
+                u.lChild = succ;
+            }
+
+        }
+
+        // 记录被删除节点的父节点
+        hot = w.parent;
+
+        // 将被删除节点的替代者与 hot 相连
+        if (succ != null) {
+            succ.parent = hot;
+        }
+
+        return succ;
+    }
+
 }
