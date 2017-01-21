@@ -1,4 +1,4 @@
-package chap2;
+package chap2_vector;
 
 import java.util.Arrays;
 

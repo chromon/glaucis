@@ -1,4 +1,4 @@
-package chap5;
+package chap5_binarytree;
 
 /**
  * 树节点类

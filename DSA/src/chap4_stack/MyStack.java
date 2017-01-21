@@ -1,6 +1,4 @@
-package chap4;
-
-import base.ArrayMaker;
+package chap4_stack;
 
 import java.lang.reflect.Array;
 

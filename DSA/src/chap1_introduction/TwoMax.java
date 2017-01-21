@@ -1,4 +1,4 @@
-package chap1;
+package chap1_introduction;
 
 /*
     最小的比较次数找出最大和次大的树

@@ -1,4 +1,4 @@
-package chap6;
+package chap6_graph;
 
 /**
  * 从任意顶点出发，经过所有的边一次且恰好一次的环路称为欧拉环路

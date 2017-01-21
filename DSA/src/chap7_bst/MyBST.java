@@ -1,6 +1,6 @@
-package chap7;
+package chap7_bst;
 
-import chap5.*;
+import chap5_binarytree.*;
 
 /**
  * Created by Ellery on 2017/1/6.

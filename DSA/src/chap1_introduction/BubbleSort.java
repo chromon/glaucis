@@ -1,4 +1,4 @@
-package chap1;
+package chap1_introduction;
 
 /*
     O(n^2)

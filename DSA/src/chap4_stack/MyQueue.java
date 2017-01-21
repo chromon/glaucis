@@ -1,4 +1,4 @@
-package chap4;
+package chap4_stack;
 
 /**
  * 自定义队列

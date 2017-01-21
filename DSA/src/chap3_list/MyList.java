@@ -1,4 +1,4 @@
-package chap3;
+package chap3_list;
 
 /**
  * 自定义 List
