@@ -18,13 +18,13 @@ public class MyVector<T extends Comparable<T>> {
     private final int DEFAULT_CAPACITY = 5;
 
     // 数据大小，逻辑空间大小
-    private int _size;
+    public int _size;
 
     // 实际容量，物理空间大小
     private int _capacity;
 
     // 数据存储空间
-    private T[] _elem;
+    public T[] _elem;
 
     // 存储元素类型
     private Class<T> clazz;
@@ -43,6 +43,8 @@ public class MyVector<T extends Comparable<T>> {
         // 初始化数据大小
         this._size = 0;
     }
+
+    public MyVector() {}
 
     /**
      * 构造方法
@@ -162,7 +164,7 @@ public class MyVector<T extends Comparable<T>> {
      * @param e 插入内容
      * @return 返回插入位置
      */
-    private int insert(int r, T e) {
+    public int insert(int r, T e) {
 
         // 如有需要进行扩容
         this.expand();
