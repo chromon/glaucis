@@ -20,6 +20,36 @@ import chap2_vector.MyVector;
 public class MyCompleteBinaryHeap<T extends Comparable<T>> extends MyVector {
 
     /**
+     * 批量建堆
+     *      给定数组建立一个完全二叉堆
+     */
+    public MyCompleteBinaryHeap(T[] a, int n) {
+        copyFrom(a, 0, n);
+        heapify(n);
+    }
+
+    /**
+     * 自下而上的下虑
+     * @param n
+     */
+    private void heapify(int n) {
+        // 叶子节点下虑是没有意义的，所以从最后一个内部节点开始下虑
+        for (int i = lastInternal(n); i >= 0; i --) {
+            percolateDown(n, i);
+        }
+    }
+
+    /**
+     * 取最后一个内部节点的秩
+     *      n/2 去下整 - 1
+     * @param n 规模
+     * @return 内部节点秩
+     */
+    private int lastInternal(int n) {
+        return (int) Math.floor(n / 2) - 1;
+    }
+
+    /**
      * 最大值
      * @return 向量首元素 == 完全二叉树树根（堆序性）
      */

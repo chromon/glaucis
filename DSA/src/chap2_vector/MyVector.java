@@ -123,7 +123,7 @@ public class MyVector<T extends Comparable<T>> {
      * @param lo 复制区间起始点，闭区间
      * @param hi 复制区间结束点，开区间
      */
-    private void copyFrom(T[] a, int lo, int hi) {
+    public void copyFrom(T[] a, int lo, int hi) {
 
         while (lo < hi) {
             this._elem[this._size ++] = a[lo ++];
