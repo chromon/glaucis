@@ -50,6 +50,14 @@ public class MyCompleteBinaryHeap<T extends Comparable<T>> extends MyVector {
     }
 
     /**
+     * 堆是否为空
+     * @return
+     */
+    public boolean empty() {
+        return _size < 0;
+    }
+
+    /**
      * 最大值
      * @return 向量首元素 == 完全二叉树树根（堆序性）
      */
