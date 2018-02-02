@@ -21,16 +21,25 @@ public class Solution {
         Queue<TreeNode> q = new LinkedList<>();
         
         List<List<Integer>> list = new ArrayList<List<Integer>>();
+        
+        if(root == null) {
+            return list;
+        }
+        
         // offer == enqueue
         q.offer(root);
+        int i = 0;
+        i ++;
 
         while (!q.isEmpty()) {
 
             List<Integer> integerList = new ArrayList<>();
+            i = q.size();
             
-            while(q.peek() != null) {
+            while(i > 0) {
                 // poll == dequeue
                 root = q.poll();
+                i --;
                 
                 integerList.add(root.val);
     
