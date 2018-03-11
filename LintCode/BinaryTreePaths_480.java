@@ -29,7 +29,29 @@ public class Solution {
         
         return result;
     }
+
+
+    public void paths(TreeNode root, ArrayList<String> result, String path){ 
+        
+        if(root == null) {
+            return;
+        }
+        
+        if(path.equals("")) {
+            path += root.val;
+        } else {
+            path += "->" + root.val;
+        }
+        
+        if(root.left == null && root.right == null) {
+            result.add(path);
+        }
+
+        paths(root.left, result, path);
+        paths(root.right, result, path);
+    }
     
+    /*
     public void paths(TreeNode root, ArrayList<String> result, String path){
         
         if(root == null) {
@@ -57,4 +79,5 @@ public class Solution {
         paths(root.right, result, path);
         
     }
+    */
 }
