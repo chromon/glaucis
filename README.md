@@ -8,7 +8,7 @@ Glaucis Code is a code repository for me.
 
 * 51Nod
 * Data Structures & Algorithms
-* The Art Of Programming
+* LintCode
 * and _much_ more!
 
 ##Support:
