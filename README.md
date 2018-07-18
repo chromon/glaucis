@@ -17,7 +17,7 @@ Support now is given by me.
 
 ## License
 
-The MIT License.
+The GPL3.0 License.
 
 ## Contact
 
