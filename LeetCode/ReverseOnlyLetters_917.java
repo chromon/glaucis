@@ -18,7 +18,8 @@ class Solution {
                 j--;
             }
             
-            if ((c[j] >= 'a' && c[j] <= 'z') || (c[j] >= 'A' && c[j] <= 'Z')) {
+            if (((c[i] >= 'a' && c[i] <= 'z') || (c[i] >= 'A' && c[i] <= 'Z')) 
+                    && ((c[j] >= 'a' && c[j] <= 'z') || (c[j] >= 'A' && c[j] <= 'Z'))) {
                 char tmp = c[i];
                 c[i] = c[j];
                 c[j] = tmp;
