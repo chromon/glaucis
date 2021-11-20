@@ -39,6 +39,7 @@ Follow up: Could you do it in O(n) time and O(1) space?
  */
 class Solution {
     
+    
     public boolean isPalindrome (ListNode head) {
     
         if (head == null || head.next == null) {
@@ -79,7 +80,6 @@ class Solution {
         return prev;
     }
     
-    
     /*
     public boolean isPalindrome(ListNode head) {
         Stack<Integer> stack = new Stack<>();
@@ -98,4 +98,39 @@ class Solution {
         }
         return true;
     }*/
+    
+    
+    /*
+    // 链表兼具递归结构，树结构是链表的衍生。所以，链表其实也可以有前序遍历和后序遍历：
+    void traverse(ListNode head) {
+        // 前序遍历代码
+        System.out.println("pre: " + head.val);
+
+        traverse(head.next);
+
+        // 后序遍历代码
+        System.out.println("post: " + head.val);
+    }  
+    */
+    
+    /*
+    // 左侧指针
+    ListNode left;
+    
+    public boolean isPalindrome (ListNode head) {
+        left = head;
+        return traverse(head);
+    }
+    
+    private boolean traverse(ListNode right) {
+        if (right == null) {
+            return true;
+        }
+        boolean res = traverse(right.next);
+        // 后序遍历代码
+        res = res && (right.val == left.val);
+        left = left.next;
+        return res;
+    }
+    */
 }

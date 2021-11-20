@@ -52,6 +52,61 @@ Follow-up: Can you solve the problem in O(1) extra memory space?
  * }
  */
 class Solution {
+    
+    /*
+    // 递归反转整个链表（从 head 到 null）
+    public ListNode reverseList(ListNode head) {
+        ListNode pre = null, cur = head, nxt = null;
+        
+        while (cur != null) {
+            nxt = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = nxt;
+        }
+        return pre;
+    }
+    */
+    
+    // 递归反转 [a, b) 之间的链表
+    public ListNode reverseList(ListNode a, ListNode b) {
+        ListNode pre = null, cur = a, nxt = null;
+        
+        while (cur != b) {
+            nxt = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = nxt;
+        }
+        return pre;
+    }
+    
+    
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (head == null) {
+            return null;  
+        }
+        
+        // 区间 [a, b) 包含 k 个待反转元素
+        ListNode a, b;
+        a = b = head;
+        for (int i = 0; i < k; i++) {
+            // 不足 k 个，不需要反转，base case
+            if (b == null) {
+                return head;
+            }
+            b = b.next;
+        }
+        
+        // 反转前 k 个元素
+        ListNode newHead = reverseList(a, b);
+        // 递归反转后续链表并连接起来
+        a.next = reverseKGroup(b, k);
+        return newHead;
+    }
+    
+    
+    /*
     public ListNode reverseKGroup(ListNode head, int k) {
         ListNode list = new ListNode(-1);
         ListNode res = list;
@@ -81,4 +136,5 @@ class Solution {
         }
         return res.next;
     }
+    */
 }
