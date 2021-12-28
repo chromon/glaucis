@@ -55,6 +55,8 @@ class Solution {
     }
     */
     
+    /*
+    // 3 ms faster than 54.09%
     public int largestSumAfterKNegations(int[] nums, int k) {
         
         while (k != 0) {
@@ -77,4 +79,52 @@ class Solution {
         
         return sum;
     }
+    */
+
+    /*
+    // 1 ms, faster than 99.79%
+    public int largestSumAfterKNegations(int[] nums, int k) {
+        
+        Arrays.sort(nums);
+        
+        for (int i = 0; i < nums.length && k > 0 && nums[i] < 0; i++) {
+            nums[i] *= -1;
+            k--;
+        }
+        
+        Arrays.sort(nums);
+        
+        if (k > 0 && k % 2 != 0) {
+            nums[0] *= -1;
+        }
+        
+        int sum = 0;
+        for (int x: nums) {
+            sum += x;
+        }
+        
+        return sum;        
+    }
+    */
+    
+    // 1 ms, faster than 99.79%
+    public int largestSumAfterKNegations(int[] nums, int k) {
+        
+        Arrays.sort(nums);
+        
+        for (int i = 0; i < nums.length && k > 0 && nums[i] < 0; i++) {
+            nums[i] *= -1;
+            k--;
+        }
+        
+        int sum = 0;
+        int min = 101;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            min = Math.min(min, nums[i]);
+        }
+        
+        return sum - (k % 2) * 2 * min;        
+    }
+    
 }
