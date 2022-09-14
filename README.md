@@ -6,12 +6,12 @@ Glaucis Code is a code repository for me.
 
 ## Features
 
-* Data Structures & Algorithms
+* Data Structures & Algorithms Code
 * LeetCode
 * LintCode
-* and _much_ more!
+* NodCode
 
-##Support:
+## Support:
 
 Support now is given by me.
 
